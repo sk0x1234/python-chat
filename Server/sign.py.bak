@@ -25,7 +25,7 @@ def createSignature(pathToPrivateKey, prehashed):
         return signature
 
     except:
-        print("Wrong password.")
+        print "Wrong password."
         return createSignature(pathToPrivateKey, prehashed)
 
 def verifySignature(serialized_public, signature, prehashed):
@@ -64,7 +64,7 @@ def signMessage(s, username, password):
     data = json.loads(unparsed)
     #Could be wrapped in a try-catch but whatever
     if not data :
-        print('\nDisconnected from chat server')
+        print '\nDisconnected from chat server'
         sys.exit()
     else :
         #First step in DH, is client

@@ -4,14 +4,14 @@ import simplejson as json
 import ssl
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
-from mk_cert_files import *
+from mk_cert_files import createCA,createRequest,signCertificates
 from OpenSSL import SSL
 
 #Own modules
-from dh import *
-from messencrypt import *
-from sign import *
-from SSLUtil import *
+from dh import hubExchange,sendKeyToClient,getKeyFromHub,clientCreateKeys,diffieHellmanExchange,getPrivateECDHKey,keyExchange,sendFernet
+from messencrypt import  generateFernetKey,decrypt,encrypt
+from sign import createSignature, verifySignature , createSerializedKeys, signMessage, getPublicKey
+from SSLUtil import getCertificate,initSSLClient,verify_cb
 
 def chat_client(port, password):
     #As this is just a basic program to show encryption, signatures and
@@ -22,25 +22,25 @@ def chat_client(port, password):
     #Create a password for the signature private key
     if password == None:
         while 1:
-            password = getpass.getpass("Enter a password for your private key>")
-            password_check = getpass.getpass("Enter it again>")
-            if password == password_check:
+            password = getpass.getpass("Enter a password for your private key: ")    # password for the privkey File.
+            password_check = getpass.getpass("Re-Enter password:")           # retype the password.
+            if password == password_check:                                   
                 break
             else:
-                print "Passwords does not match."
+                print ("Passwords does not match.")                                     
 
-    host = '83.253.117.77'  
-    #Get CA signed SSL certificate from server
-    getCertificate()
-    s = initSSLClient(9009)
+    host = '127.0.0.1'                                                 # HostIP
+    #Get CA signed SSL certificate from server  
+    getCertificate()                                     # from SSLUtil module
+    s = initSSLClient(9009)                              # server listens on 9009 port
     #Selecting the port for the chatroom to join.
-    roomport = roomHandler(s)
+    roomport = roomHandler(s)                             # defined Below
     #SSL socket with the new port.
-    getCertificate()
-    s = initSSLClient(roomport)
-    username = raw_input("Enter your chatalias> ")
+    getCertificate()                                      # again SSLUtil module  
+    s = initSSLClient(roomport)                           #  room listens on random socket port !!
+    username = input("Enter your chatalias> ")              
     #Create the signature
-    signMessage(s, username, password)
+    signMessage(s, username, password)                    #    
     #Generate key for encryption. If you are not "Hub", this key will be thrown.
     fernet_key = generateFernetKey()
     #Gets the fernet key for the end-to-end encryption

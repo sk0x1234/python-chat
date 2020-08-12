@@ -102,7 +102,7 @@ def diffieHellmanExchange(s, fernet_key):
             sys.exit()
 
         if not data:
-            print('\nDisconnected from chat server')
+            print '\nDisconnected from chat server'
             sys.exit()
         else :
             if data["dh"] == "c":

@@ -10,7 +10,7 @@ def getCertificate():
     try:
         s.connect(('localhost', 9998))
     except :
-        print "Unable to connect. Either the server is down or the certificate can not be verified."
+        print ("Unable to connect. Either the server is down or the certificate can not be verified.")
         sys.exit()
 
     #This is really important that this is the first thing happening BEFORE any other exchange

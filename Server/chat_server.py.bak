@@ -4,7 +4,7 @@ import threading
 from threading import Lock
 import simplejson as json
 from sign import verifySignature
-import queue
+import Queue
 
 #ssl
 from mk_cert_files import *
@@ -28,7 +28,7 @@ def main():
     #create server certificates.
     createServerCert()
     #Defines which port that should be accessible
-    q = queue.Queue()
+    q = Queue.Queue()
     for i in range(9010, 9015):
         q.put(i)
     chat_handler(q)
@@ -106,7 +106,7 @@ def chat_handler(queue):
 
                     else:
                         # remove the socket that's broken
-                        print("removing\n")
+                        print "removing\n"
                         if sock in SOCKET_LIST:
                             SOCKET_LIST.remove(sock)
                 # exception
@@ -133,7 +133,7 @@ def chat_server(PORT, queue, roomDict, name):
     server_socket.listen(10)
     SOCKET_LIST.append(server_socket)
 
-    print("Chat server started on port " + str(PORT))
+    print "Chat server started on port " + str(PORT)
 
     chatDone = False
     while chatDone == False:
@@ -169,7 +169,7 @@ def chat_server(PORT, queue, roomDict, name):
                     HUBSOCK = sockfd
                     HubElector = 1
 
-                print("Client (%s, %s) connected" % addr)
+                print "Client (%s, %s) connected" % addr
 
                 broadcast(SOCKET_LIST, server_socket, sockfd, "server", "[%s] entered our chatting room\n" % userDict[addr])
 
@@ -198,7 +198,7 @@ def chat_server(PORT, queue, roomDict, name):
                     continue
 
     #Quitting the thread.
-    print("Quitting thread: ", PORT)
+    print "Quitting thread: ", PORT
     queue.put(PORT)
     roomDict.pop(name, None)
     server_socket.close()
@@ -220,7 +220,7 @@ def broadcast (SOCKET_LIST, server_socket, sock, sender, data):
                 json_string = {"message": message, "dh": dh}
                 socket.send(json.dumps(json_string))
             except :
-                print("error")
+                print "error"
                 # broken socket connection
                 socket.close()
                 # broken socket, remove it
@@ -291,7 +291,7 @@ def createServerCert():
     open('server.cert', 'w').write(crypto.dump_certificate(crypto.FILETYPE_PEM, serv_cert))
 
 def signCertThread():
-    print("Started signing thread")
+    print "Started signing thread"
     HOST = ''
     RECV_BUFFER = 4096
     PORT = 9998

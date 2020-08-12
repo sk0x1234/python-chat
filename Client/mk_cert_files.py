@@ -1,5 +1,5 @@
 from OpenSSL import crypto
-from createCert import *  
+from createCert import createKeyPair,createCertRequest,createCertificate 
 
 #modified examples from pyOpenSSL examples
 def createCA():
@@ -14,9 +14,11 @@ def createCA():
 def createRequest(origin):
     pkey = createKeyPair(TYPE_RSA, 2048)
     req = createCertRequest(pkey, CN=origin)
-    open('keys/%s.pkey' % (origin,), 'w').write(crypto.dump_privatekey(crypto.FILETYPE_PEM, pkey))
+    open('keys/%s.pkey' % (origin), 'w').write(crypto.dump_privatekey(crypto.FILETYPE_PEM, pkey))
     return req
 
 def signCertificates(req, cacert, cakey):
     cert = createCertificate(req, (cacert, cakey), 1, (0, 60*60*24)) #24 hours.
     return cert
+
+
